@@ -1,0 +1,990 @@
+---
+title: 하루에 한 개..❗️ JS Quiz로 복습하기
+date: "2023-09-01"
+description: JavaScript Quiz Note
+tag: JS
+---
+
+> 해당 포스트는 [https://github.com/lydiahallie/javascript-questions](https://github.com/lydiahallie/javascript-questions) 저장소를 기반으로 합니다.
+
+회사 일 이외에 조금이라도 공부를 하고 하자는 마음으로 기반을 하자는 목적 하에 <br/> 프론트엔드 개발자의 베이스 중 베이스인 자바스크립트 감을 유지하는 목적입니다.
+
+해당 포스트는 노트처럼 한 문제 씩 이곳에 기록. 📝
+
+### 2023.09.01
+
+1. What's the output?
+
+```js
+function sayHi() {
+    console.log(name);
+    console.log(age);
+    var name = "Lydia";
+    let age = 21;
+}
+
+sayHi();
+```
+
+-   A: `Lydia` and `undefined`
+-   B: `Lydia` and `ReferenceError`
+-   C: `ReferenceError` and `21`
+-   D: `undefined` and `ReferenceError`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: D
+
+함수 안에서, 우선 `var` 키워드를 사용해 `name` 변수를 선언 합니다. 이것은 변수를 정의한 줄에 실제로 도달할 때까지, 기본값 `undefined`으로 호이스팅 되는 것(생성단계에 메모리 공간이 설정)을 의미 합니다. `name` 변수를 출력하려는 줄에서 아직 변수를 정의하지 않았기 때문에, `undefined` 값을 유지
+`var`와는 다르게 `let` 키워드(그리고 `const`)를 가진 변수는 호이스팅 되지만, 초기화 되지 않습니다. 변수를 선언(초기화)하는 줄 전에는 접근 ❌ 이건 "일시적 사각지대"라고 합니다. 변수가 선언되기 전 변수에 접근하려고 하면, JavaScript는 `ReferenceError`를 표현합니다.
+
+</details>
+
+<br />
+
+### 2023.09.02
+
+2. What's the output?
+
+```js
+for (var i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 1);
+}
+
+for (let i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 1);
+}
+```
+
+-   A: 0 1 2 and 0 1 2
+-   B: 0 1 2 and 3 3 3
+-   C: 3 3 3 and 0 1 2
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: C
+
+JavaScript의 이벤트 큐 때문에, setTimeout의 콜백 함수는 루프가 실행된 후에 호출 됩니다. 첫 번째의 루프의 변수 i는 var 키워드를 사용해 선언되어 전역 값이 됩니다. 루프 동안, 단항 연산자 ++를 사용해 매번 i의 값을 1씩 증가. setTimeout콜백 함수가 호출되기까지, 첫 번째 예시에서의 i는 3.
+두 번째 루프에서, 변수 i는 let 키워드를 사용해 선언. let(그리고 const) 키워드로 선언된 변수는 블록스코프. 각각을 반복하는 동안, i는 새로운 값을 갖게 되고, 각각의 값은 루프 스코프 안에 있습니다.
+
+</details>
+
+<br />
+
+### 2023.09.03
+
+3. What's the output?
+
+```js
+const shape = {
+    radius: 10,
+    diameter() {
+        return this.radius * 2;
+    },
+    perimeter: () => 2 * Math.PI * this.radius,
+};
+
+console.log(shape.diameter());
+console.log(shape.perimeter());
+```
+
+-   A: `20` and `62.83185307179586`
+-   B: `20` and `NaN`
+-   C: `20` and `63`
+-   D: `NaN` and `63`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: B
+
+처음에 생각한 답은 A 입니다(하지만 오답,,)
+
+`diameter`의 값은 일반 함수지만, `perimeter`의 값은 화살표 함수라는 점을 유의 합시다.
+
+**화살표 함수**에서 `this` 키워드는 일반 함수와는 다르게 **현재 주변 스코프를 참조** 합니다! 이것은 `perimeter`를 부를 때 shape 객체가 아닌 그것을 둘러싼 스코프를 참조 합니다.
+
+그 객체에는 `radius`라는 값은 없기 때문에 `undefined`를 반환 합니다.
+
+</details>
+
+<br />
+
+### 2023.09.04
+
+4. What's the output?
+
+```js
++true;
+!"Lydia";
+```
+
+-   A: `1` and `false`
+-   B: `false` and `NaN`
+-   C: `false` and `false`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: A
+
+단항 더하기는 피연산자를 숫자로 변환 합니다. `true`는 `1`이고, `false`는 `0`이.
+문자열 `'Lydia'`는 참 같은 값 입니다. 느낌표(!)는 논리적 NOT 연산자로 사용됩니다. 주요 목적은 Boolean 값을 부정하는 것입니다.
+따라서 true의 부정은 false 값 이므로 2번째는 false가 됩니다.
+
+</details>
+
+<br />
+
+### 2023.09.05
+
+5. What's the output?
+
+```js
+const bird = {
+    size: "small",
+};
+
+const mouse = {
+    name: "Mickey",
+    small: true,
+};
+```
+
+-   A: `mouse.bird.size` 는 유효하지 않아요
+-   B: `mouse[bird.size]` 는 유효하지 않아요
+-   C: `mouse[bird['size']]` 는 유효하지 않아요
+-   D: 이 모든 것은 유효해요.
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: A
+
+(와.. 전혀 몰랐다)
+
+JavaScript에서 모든 객체의 키는 문자열이에요(심볼이 아닌 한). 객체의 키를 문자열 _형_ 으로 입력하지 않더라도, 항상 내부적으로 문자열로 변환돼요.
+
+JavaScript는 문장을 해석(또는 분)해요. 대괄호 표기를 사용하면 첫 번째 열린 대괄호 `[`를 보고 닫힌 대괄호 `]`를 찾을 때까지 진행해요. 다 찾은 후에만 문장을 평가할 거예요.
+
+`mouse[bird.size]`: 먼저 `'small'`인 `bird.size`를 평가해요. `mouse['small']` 은 `true`를 반환해요.
+
+그러나 이것은 점 표기법에서 발생하지 않아요. `mouse`가 `bird`라고 불리는 키를 가지고 있지 않기 때문에, `mouse.bird`는 `undefined`임을 의미해요. 그다음에, 점 표기법을 사용해 `size`를 물어봐요: `mouse.bird.size`. `mouse.bird`는 `undefined`이기 때문에, 사실 우리가 물어보는 건 `undefined.size`에요. 이건 유효하지 않아요, 그리고 `Cannot read property 'size' of undefined`와 비슷한 오류를 던질 거예요.
+
+</details>
+
+<br />
+
+### 2023.09.06
+
+6. What's the output?
+
+```js
+let c = { greeting: "Hey!" };
+let d;
+
+d = c;
+c.greeting = "Hello";
+console.log(d.greeting);
+```
+
+-   A: `Hello`
+-   B: `Hey!`
+-   C: `undefined`
+-   D: `ReferenceError`
+-   E: `TypeError`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: A
+
+> 객체의 `깊은 복사`와 `얕은 복사`의 차이를 물어보는 문제 입니다.
+
+A가 나오는 이유는 `얕은 복사` 입니다.
+
+> JavaScript에서 모든 객체는 서로를 동일하게 설정하면 *참조*로 상호작용해요.
+> 우선, 변수 `c`는 객체에 대한 값을 갖고 있어요. 그 후 `c`가 객체에 가지고 있는 것과 동일한 참조를 `d`에 할당해요.
+> 하나의 객체를 변경하면, 모든 객체가 변해요.
+
+참조값을 복사할 때는 변수가 객체의 참조를 가리키고 있기 때문에 복사된 변수 또한 객체가 저장된 메모리 공간의 참조를 가리키고 있습니다. 그래서 복사를 하고 객체를 수정하면 두 변수는 똑같은 참조를 가리키고 있기 때문에 기존 객체를 저장한 변수에 영향을 끼칩니다. 이처럼 객체의 참조값(주소값)을 복사하는 것을 얕은 복사라고 합니다.
+
+</details>
+
+<br />
+
+### 2023.09.07
+
+7. What's the output?
+
+```js
+let a = 3;
+let b = new Number(3);
+let c = 3;
+
+console.log(a == b);
+console.log(a === b);
+console.log(b === c);
+```
+
+-   A: `true` `false` `true`
+-   B: `false` `false` `true`
+-   C: `true` `false` `false`
+-   D: `false` `true` `true`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: C
+
+> new Number()는, 내장 함수 생성자 입니다. 숫자처럼 보이지만, 사실 숫자가 아닙니다.
+> 많은 추가 특성이 있고 그것은 객체 입니다.
+> 그리고 '==(동등)' 와 '===(일치)' 의 차이를 물어보는 문제 입니다.
+
+`==`연산자를 사용할 때는, 같은 `값` 을 가졌는지 여부만 확인 합니다. 모두`3`의 값을 가지고 있음으로 `true`를 반환 합니다.
+그러나, `===`연산자를 사용할 때는, 값과 타입 둘 다 같아야 합니다. 추가로 `new Number()`는 숫자가 아니고. **객체** 입니다. 따라서 둘 다 `false`를 반환 합니다.
+
+</details>
+
+<br />
+
+### 2023.09.08
+
+8. What's the output?
+
+```js
+class Chameleon {
+    static colorChange(newColor) {
+        this.newColor = newColor;
+        return this.newColor;
+    }
+
+    constructor({ newColor = "green" } = {}) {
+        this.newColor = newColor;
+    }
+}
+
+const freddie = new Chameleon({ newColor: "purple" });
+console.log(freddie.colorChange("orange"));
+```
+
+-   A: `orange`
+-   B: `purple`
+-   C: `green`
+-   D: `TypeError`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: d
+
+헷갈리는 클래스,,, 왜 B라고 생각했지..
+
+`colorChange`함수는 정적 입니다. 정적 메소드는 그것이 만들어지는 생성자에서만 살아있도록 설계되어,
+어떤 자식들도 상속받을 수 없습니다. `freddie`는 자식이기 때문에, 이 함수는 상속되지 않아 `freddie`인스턴스에서는 이용할 수 없으며 `TypeError`가 주어집니다.
+
+</details>
+
+<br />
+
+### 2023.09.09
+
+9. What's the output?
+
+```js
+let greeting;
+greetign = {}; // Typo!
+console.log(greetign);
+```
+
+-   A: `{}`
+-   B: `ReferenceError: greetign is not defined`
+-   C: `undefined`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: A
+
+전역 객체에 빈 객체를 만들었기 때문에, 객체는 출력!
+
+</details>
+
+<br />
+
+### 2023.09.10
+
+10. What's the output?
+
+```js
+function bark() {
+    console.log("Woof!");
+}
+
+bark.animal = "dog";
+```
+
+-   A: No problem
+-   B: `SyntaxError` 이 방법으로 함수에 속성을 추가할 수 없음.
+-   C: `"Woof"`이 출력
+-   D: `ReferenceError`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: A
+
+B라고 생각했는데 이게 문제 없다고..?
+
+> JavaScript에서는 가능한데, 함수는 객체이기 때문! (원시형 이외는 모두 객체)
+
+함수는 특별한 종류의 객체 입니다. 당신이 쓴 코드는 실제 함수가 아니에요. 함수는 속성을 가진 객체이므로 이 속성은 호출이 가능 합니다.
+
+</details>
+
+<br />
+
+### 2023.09.11
+
+11. What's the output?
+
+```js
+function Person(firstName, lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+}
+
+const member = new Person("Lydia", "Hallie");
+Person.getFullName = function () {
+    return `${this.firstName} ${this.lastName}`;
+};
+
+console.log(member.getFullName());
+```
+
+-   A: `TypeError`
+-   B: `SyntaxError`
+-   C: `Lydia Hallie`
+-   D: `undefined` `undefined`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: A
+
+> 기억하자,, 자바스크립트에서 함수는 객체다.
+
+JavaScript에서, 함수는 객체이고 그렇기 때문에 메소드 `getFullName`은 생성자 함수 객체 자체에 추가 됩니다.
+이런 이유로, 우리는 `Person.getFullName()`을 부를 수 있지만 `member.getFullName()`은 `TypeError`를 나타냅니다.
+
+</details>
+
+<br />
+
+### 2023.09.12
+
+12. What's the output?
+
+```js
+function Person(firstName, lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+}
+
+const lydia = new Person("Lydia", "Hallie");
+const sarah = Person("Sarah", "Smith");
+
+console.log(lydia);
+console.log(sarah);
+```
+
+-   A: `Person {firstName: "Lydia", lastName: "Hallie"}` 그리고 `undefined`
+-   B: `Person {firstName: "Lydia", lastName: "Hallie"}` 그리고 `Person {firstName: "Sarah", lastName: "Smith"}`
+-   C: `Person {firstName: "Lydia", lastName: "Hallie"}` 그리고 `{}`
+-   D:`Person {firstName: "Lydia", lastName: "Hallie"}` 그리고 `ReferenceError`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: A
+
+> new의 차이점에 대해 기억하자
+
+`sarah`에게 `new` 키워드를 사용하지 않았어요. `new`를 사용한 경우, `this`는 우리가 만든 새로운 빈 객체를 참조합니다. 그러나, `new`를 추가하지 않으면 **전역 변수**를 참조 합니다.
+`this.firstName`은 `"Sarah"`이고, `this.lastName`은 `"Smith"`라고 생각하지만 실제로는, `global.firstName = 'Sarah'` 그리고 `global.lastName = 'Smith'`를 정의한 것 입니다.
+`sarah` 자체는 `undefined`로 남아있기에, `Person`함수의 값을 반환하지 않습니다.
+
+</details>
+
+<br />
+
+### 2023.09.13
+
+13. 이벤트 전달의 3단계는
+
+-   A: Target > Capturing > Bubbling
+-   B: Bubbling > Target > Capturing
+-   C: Target > Bubbling > Capturing
+-   D: Capturing > Target > Bubbling
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: D
+
+> 자바스크립트에서 이벤트가 부모에 걸쳐서 의도치 않게 되는 경우가 있으니까 기억하고 있자.
+
+**capturing** 단계 동안에, 이벤트는 부모 요소를 거쳐 target 요소까지 내려가고, <br/> 그런 다음 **target** 요소에 도달 후, **bubbling**이 시작 됩니다.
+
+> 이벤트 버블링이란 한 요소에 이벤트가 발생하면 이 요소에 할당된 핸들러가 동작하고, 이어서 부모 요소의 핸들러가 동작하고 최상단의 부모 요소를 만날 때까지 반복되면서 핸들러가 동작하는 현상을 말한다.
+
+> 캡처링은 버블링과는 반대로 최상위 태그에서 해당 태그를 찾아 내려간다.
+
+정리하자면
+
+-   캡처링 단계 : 이벤트가 하위 요소로 전파되는 단계
+-   타깃 단계 : 이벤트가 실제 타깃 요소에 전달되는 단계
+-   버블링 단계 : 이벤트가 상위 요소로 전파되는 단계
+
+<img src="https://i.imgur.com/N18oRgd.png" width="200" />
+
+</details>
+
+<br />
+
+### 2023.09.14
+
+14. What's the output?
+
+```js
+function sum(a, b) {
+    return a + b;
+}
+
+sum(1, "2");
+```
+
+-   A: `NaN`
+-   B: `TypeError`
+-   C: `'12'`
+-   D: `3`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: C
+
+자바스크립트는 동적 타입 언어! 숫자 타입과 문자 타입을 연산하려고 하면 숫자는 문자열로 인식 합니다.
+
+</details>
+
+<br />
+
+### 2023.09.15
+
+15. What's the output?
+
+```js
+let number = 0;
+console.log(number++);
+console.log(++number);
+console.log(number);
+```
+
+-   A: `1` `1` `2`
+-   B: `1` `2` `2`
+-   C: `0` `2` `2`
+-   D: `0` `1` `2`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: C
+
+1. console.log(number++): 이 줄에서는 number 변수를 출력한 후에 number를 증가시킵니다. 따라서 출력은 0이 됩니다. 그러나 이후에 number는 1이 됩니다.
+2. console.log(++number): 이 줄에서는 number를 먼저 증가시킨 후에 출력합니다. 따라서 출력은 2가 됩니다. number는 이제 2입니다.
+3. console.log(number): 이 줄에서는 number의 현재 값을 출력합니다. 따라서 출력은 2가 됩니다.
+
+</details>
+
+<br />
+
+### 2023.09.16
+
+16. What's the output?
+
+```js
+function getPersonInfo(one, two, three) {
+    console.log(one);
+    console.log(two);
+    console.log(three);
+}
+
+const person = "Lydia";
+const age = 21;
+
+getPersonInfo`${person} is ${age} years old`;
+```
+
+-   A: `"Lydia"` `21` `["", " is ", " years old"]`
+-   B: `["", " is ", " years old"]` `"Lydia"` `21`
+-   C: `"Lydia"` `["", " is ", " years old"]` `21`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: B
+
+> 태그가 지정된 템플릿 리터럴을 사용하고 있습니다. 태그된 템플릿 리터럴은 함수를 사용하여 템플릿 리터럴(백틱으로 묶인 문자열)을 처리할 수 있게 해주는 JavaScript의 기능입니다. 코드에서 getPersonInfo는 함수이며 이를 사용하여 템플릿 리터럴을 처리하고 있습니다
+
+첫 번째는 빈 문자열인 배열 console.log(one);의 첫 번째 요소를 인쇄합니다. → ["", " is ", " years old"] <br/>
+두 번째는 변수 console.log(two);의 값인 를 인쇄합니다 → 'Lydia' <br/>
+세 번째는 변수 console.log(three);의 값인 를 인쇄합니다 → 21
+
+</details>
+
+<br />
+
+### 2023.09.17
+
+17. What's the output?
+
+```js
+function checkAge(data) {
+    if (data === { age: 18 }) {
+        console.log("You are an adult!");
+    } else if (data == { age: 18 }) {
+        console.log("You are still an adult.");
+    } else {
+        console.log(`Hmm.. You don't have an age I guess`);
+    }
+}
+
+checkAge({ age: 18 });
+```
+
+-   A: `You are an adult!`
+-   B: `You are still an adult.`
+-   C: `Hmm.. You don't have an age I guess`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: C
+
+> 원시형은 값으로 비교하고 객체는 값을 참조하고 있는 주소로 비교한다는 것을 기억합시다.
+
+JavaScript는 객체가 메모리 내의 같은 장소를 참조하고 있는지를 확인 합니다.
+
+파라미터로 전달된 객체와 동등성을 확인하기 위해 사용한 객체는 **메모리 내의 다른 장소를 참조 합니다.**
+
+`{ age: 18 } === { age: 18 }` 그리고 `{ age: 18 } == { age: 18 }` 두 개 다 `false`를 반환하는 이유 입니다.
+
+</details>
+
+<br />
+
+### 2023.09.18
+
+18. What's the output?
+
+```js
+function getAge(...args) {
+    console.log(typeof args);
+}
+
+getAge(21);
+```
+
+-   A: number
+-   B: array
+-   C: object
+-   D: NaN
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: C
+
+> 자바스크립트 배열은 인덱스를 프로퍼티 키로 갖으며 length 프로퍼티를 갖는 특수한 객체이다.
+
+rest 파라미터 (`...args`)는 남아있는 모든 인수을 하나의 배열로 "집합" 합니다. 그리고 자바스크립트에서 배열은 객체이니까 `typeof args`는 `"object"`를 반환 합니다.
+
+</details>
+
+<br />
+
+### 2023.09.19
+
+19. What's the output?
+
+```js
+function getAge() {
+    "use strict";
+    age = 21;
+    console.log(age);
+}
+
+getAge();
+```
+
+-   A: `21`
+-   B: `undefined`
+-   C: `ReferenceError`
+-   D: `TypeError`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: C
+
+> use strict는 자바스크립트를 엄격하게 해줍니다.
+
+`use strict`을 사용하면, 실수로 전역 변수를 선언하지 않게 해줍니다. `age`라는 변수를 선언한 적이 전혀 없고, `use strict`을 사용하고 있으니, reference error를 던지게 됩니다.
+만약 `use strict`을 사용하지 않았다면 에러를 던지지 않습니다. `age` 속성이 전역 객체에 추가된 것이기 때문입니다.
+
+</details>
+
+<br />
+
+### 2023.09.20
+
+20. What's the output?
+
+```js
+const sum = eval("10*10+5");
+```
+
+-   A: 105
+-   B: "105"
+-   C: TypeError
+-   D: "10\*10+5"
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: A
+
+> `eval` 문자열로 통과된 코드를 평가 합니다.
+
+만약 그것이 이 경우처럼 표현 식이라면, 표현 식을 평가 합니다(`10 * 10 + 5`), 이것은 숫자 105 를 반환 홥니다.
+
+</details>
+
+<br />
+
+### 2023.09.21
+
+21. 세션에 접근 가능한 시간은?
+
+```js
+sessionStorage.setItem("cool_secret", 123);
+```
+
+-   A: 영원히, 데이터는 사라지지 않아요.
+-   B: 사용자가 탭을 닫을 때.
+-   C: 사용자가 탭뿐만 아니라, 브라우저 전체를 닫을 때.
+-   D: 사용자가 자신의 컴퓨터를 종료시켰을 때.
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: B
+
+`sessionStorage` 에 저장된 데이터는 탭을 닫은 후에 삭제 됩니다.
+
+</details>
+
+<br />
+
+### 2023.09.22
+
+22. What's the output?
+
+```js
+var num = 8;
+var num = 10;
+
+console.log(num);
+```
+
+-   A: `8`
+-   B: `10`
+-   C: `SyntaxError`
+-   D: `ReferenceError`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: B
+
+`var` 키워드를 사용하면, 같은 이름으로 복수의 변수를 선언할 수 있습니다.
+
+</details>
+
+<br />
+
+### 2023.09.23
+
+23. What's the output?
+
+```js
+const obj = { 1: "a", 2: "b", 3: "c" };
+const set = new Set([1, 2, 3, 4, 5]);
+
+obj.hasOwnProperty("1");
+obj.hasOwnProperty(1);
+set.has("1");
+set.has(1);
+```
+
+-   A: `false` `true` `false` `true`
+-   B: `false` `true` `true` `true`
+-   C: `true` `true` `false` `true`
+-   D: `true` `true` `true` `true`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: C
+
+> 모든 객체의 키는(심볼 제외) 문자열로 직접 입력하지 않았다고 해도 내부적으로는 문자열 입니다.
+
+이것이 `obj.hasOwnProperty('1')`도 true를 반환하는 이유 입니다.
+
+set에서는 동작하지 않습니다. set에는 '1'이 없습니다. `set.has('1')`은 `false`를 반환하고, 숫자 유형인 `1`을 가지고 있어, `set.has(1)`는 `true`를 반환 합니다.
+
+</details>
+
+<br />
+
+### 2023.09.24
+
+24. What's the output?
+    gergregre
+
+```js
+for (let i = 1; i < 5; i++) {
+    if (i === 3) continue;
+    console.log(i);
+}
+```
+
+-   A: `1` `2`
+-   B: `1` `2` `3`
+-   C: `1` `2` `4`
+-   D: `1` `3` `4`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: C
+
+> `continue` 표현 식은 특정 조건이 `true`를 반환하면 반복 처리를 건너뜁니다.
+
+즉, continue에 도달했을 때 그 아래 코드들을 실행하지 않고 진행 합니다.
+
+</details>
+
+<br />
+
+### 2023.09.25
+
+25. What's the output?
+
+```js
+String.prototype.giveLydiaPizza = () => {
+    return "Just give Lydia pizza already!";
+};
+
+const name = "Lydia";
+
+console.log(name.giveLydiaPizza());
+```
+
+-   A: `"Just give Lydia pizza already!"`
+-   B: `TypeError: not a function`
+-   C: `SyntaxError`
+-   D: `undefined`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: A
+
+`String`은 내장 생성자로 속성을 추가할 수 있습니다.
+
+</details>
+
+<br />
+
+### 2023.09.26
+
+26. What's the output?
+
+```js
+const a = {};
+const b = { key: "b" };
+const c = { key: "c" };
+
+a[b] = 123;
+a[c] = 456;
+
+console.log(a[b]);
+```
+
+-   A: `123`
+-   B: `456`
+-   C: `undefined`
+-   D: `ReferenceError`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: B
+
+> JavaScript에서 객체 키는 문자열로 저장됩니다. 객체를 키로 사용하면 문자열 표현으로 변환됩니다.
+
+이 경우 b및 c개체는 모두 "[object Object]"라는 동일한 문자열로 변환됩니다. 따라서 코드는 다음과 동일합니다.
+
+```js
+a["[object Object]"] = 123;
+a["[object Object]"] = 456;
+```
+
+결과적으로 의 값은 a[b]두 번째 할당으로 덮어쓰여 a[b]궁극적으로 와 동일해집니다 456.
+
+</details>
+
+<br />
+
+### 2023.09.27
+
+27. What's the output?
+
+```js
+const foo = () => console.log("First");
+const bar = () => setTimeout(() => console.log("Second"));
+const baz = () => console.log("Third");
+
+bar();
+foo();
+baz();
+```
+
+-   A: `First` `Second` `Third`
+-   B: `First` `Third` `Second`
+-   C: `Second` `First` `Third`
+-   D: `Second` `Third` `First`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: B
+
+`bar()`가 호출됩니다. 지연 후 비동기적으로 발생하도록 'setTimeout' 내부의 함수 실행을 예약합니다. 따라서 "두 번째"는 즉시 출력되지 않습니다.
+
+</details>
+
+<br />
+
+### 2023.09.28
+
+28. 버튼을 클릭했을때 event.target은 무엇일까요?
+
+```js
+<div onclick="console.log('first div')">
+    <div onclick="console.log('second div')">
+        <button onclick="console.log('button')">Click!</button>
+    </div>
+</div>
+```
+
+-   A: 외부의 `div`
+-   B: 내부의 `div`
+-   C: `button`
+-   D: 중첩된 모든 요소의 배열
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: C
+
+> 가장 깊이 중첩된 요소가 이벤트를 발생시킬 이벤트 대상 입니다.
+
+`event.stopPropagation`을 통해서 버블링을 중단할 수 있습니다.
+
+</details>
+
+<br />
+
+### 2023.09.29
+
+29. p태그를 클릭하면 출력된 로그는 무엇일까요?
+
+```js
+<div onclick="console.log('div')">
+    <p onclick="console.log('p')">Click here!</p>
+</div>
+```
+
+-   A: `p` `div`
+-   B: `div` `p`
+-   C: `p`
+-   D: `div`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: A
+
+> 이벤트 버블링에 관련된 문제 입니다.
+
+이벤트 버블링이란 한 요소에 이벤트가 발생하면 이 요소에 할당된 핸들러가 동작하고, 이어서 부모 요소의 핸들러가 동작하고 최상단의 부모 요소를 만날 때까지 반복되면서 핸들러가 동작하는 현상 입니다.
+
+</details>
+
+<br />
+
+### 2023.09.30
+
+30. What's the output?
+
+```js
+const person = { name: "Lydia" };
+
+function sayHi(age) {
+    console.log(`${this.name} is ${age}`);
+}
+
+sayHi.call(person, 21);
+sayHi.bind(person, 21);
+```
+
+-   A: `undefined is 21` `Lydia is 21`
+-   B: `function` `function`
+-   C: `Lydia is 21` `Lydia is 21`
+-   D: `Lydia is 21` `function`
+
+<details>
+<summary><b>Answer</b></summary>
+
+### Answer: D
+
+> 함수는 별도의 처리를 하지 않으면 this는 window 객체를 나타냅니다. 하지만 call()은 window객체가 아니라 특정 객체를 지정 할 수 있습니다.
+
+함수는 별도의 처리를 하지 않으면 this는 window 객체를 나타냅니다. <br/>
+call()은 모든 함수에서 사용 가능하며, this를 특정 객체로 지정할 수 있습니다. <br/>
+
+> bind()는 this를 영구적으로 변경 할 수 있습니다. 그러나 중요한 차이점이 있습니다. 함수를 즉시 호출하지 않는다는 것 입니다.
+
+함수를 실행 시키려면 예시처럼 별도로 호출을 해야 합니다.
+
+```js
+const boundFunction = sayHi.bind(person, 21);
+boundFunction(); // Output: Lydia is 21
+```
+
+</details>
